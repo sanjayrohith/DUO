@@ -345,3 +345,28 @@ Two related levers, both used from Phase 3 onward:
 A first request after idle also pays a model load cost of several seconds while
 weights are read into RAM. Send a throwaway prompt to warm the model before a
 demo.
+
+## 6. Memory store: sqlite-vec
+
+Structured memory (sessions, scores, exercises, preferences) and semantic
+memory (embeddings for recall) both live in one SQLite file at `DUO_DB_PATH`,
+using the [`sqlite-vec`](https://github.com/asg017/sqlite-vec) extension for
+the embedding table. No separate vector server.
+
+**Verified (2026-08-11, x86_64 dev machine, sqlite-vec 0.1.9):** the extension
+loads via `conn.enable_load_extension` + `sqlite_vec.load(conn)`, a
+`vec0(embedding float[N])` virtual table creates cleanly, and a nearest-neighbor
+`MATCH` query returns correctly ranked results. No blob/brute-force fallback is
+needed on this platform. **Not yet verified on Raspberry Pi (arm64)** — the
+plan's target hardware — re-run this check there before relying on it for the
+demo; fall back to storing embeddings as blobs with brute-force cosine
+similarity in Python if the extension fails to load on arm64.
+
+One real API constraint found during verification: `vec0` requires its `LIMIT`
+(or `k = ?`) to sit directly on the KNN query against the virtual table —
+joining to another table and filtering (e.g. by `user_id`) in the same query
+as the `MATCH` clause raises `OperationalError: A LIMIT or 'k = ?' constraint
+is required on vec0 knn queries`. `duo_server/memory/semantic.py` works around
+this by running the KNN search in an inner subquery with its own generous
+`LIMIT`, then joining and filtering by `user_id` in the outer query.
+Embeddings are 768-dimensional to match `nomic-embed-text`.
