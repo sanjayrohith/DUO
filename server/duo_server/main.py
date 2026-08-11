@@ -1,19 +1,16 @@
-import json
 from contextlib import asynccontextmanager
-from pathlib import Path
 
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 from sse_starlette.sse import EventSourceResponse
 
 from duo_server.config import settings
+from duo_server.games.state import next_line
 from duo_server.llm.ollama_client import stream_chat
 from duo_server.memory import structured
 from duo_server.memory.db import get_connection, init_db
-from duo_server.memory.semantic import add_memory, recall
-
-SYSTEM_PROMPT = Path(settings.duo_persona_prompt_path).read_text()
-FEW_SHOT_TURNS = json.loads(Path(settings.duo_persona_few_shot_path).read_text())
+from duo_server.memory.semantic import recall
+from duo_server.persona.loader import FEW_SHOT_TURNS, SYSTEM_PROMPT
 
 MEMORY_RECALL_K = 3
 
@@ -51,6 +48,12 @@ class ScoreRequest(BaseModel):
     game: str
     metric: str
     value: float
+
+
+class InteractionEventRequest(BaseModel):
+    session_id: str
+    game: str
+    event: str
 
 
 @app.get("/health")
@@ -137,3 +140,11 @@ async def progress(user_id: int):
         best_scores.setdefault(game, {})[metric] = structured.get_best(conn, user_id, game, metric)
 
     return {"recent_sessions": recent_sessions, "best_scores": best_scores}
+
+
+@app.post("/interaction/event")
+async def interaction_event(request: InteractionEventRequest):
+    try:
+        return await next_line({"event": request.event, "game": request.game})
+    except ValueError as exc:
+        raise HTTPException(status_code=400, detail=str(exc))
