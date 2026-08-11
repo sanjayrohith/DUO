@@ -24,6 +24,23 @@ modules compiled in, installed like a normal app. Plan all camera work
 against a dev client from the start; don't prototype it in Expo Go and expect
 it to carry over.
 
+## Face rendering (Skia + Reanimated)
+
+`src/components/face/DuoFace.tsx` renders the nine face states (mirroring the
+server's `FaceState` enum in `duo_server/games/state.py`) as a Skia canvas —
+two eyes and a mouth curve — driven by Reanimated shared values. Call
+`setFaceState(state)` via a ref to transition (`withTiming`, 300ms).
+
+Versions installed (2026-08-11, checked against SDK 57 / RN 0.86.2 compat):
+
+- `@shopify/react-native-skia@^2.11.0` — requires `react-native-reanimated>=4.0.0` and `react-native-worklets>=0.7.0`.
+- `react-native-reanimated@^4.5.3` — requires RN `0.83-0.86` (RN 0.86.2 fits) and `react-native-worklets` `0.10.x-0.11.x`.
+- `react-native-worklets@^0.11.3`.
+- `babel.config.js` adds the `react-native-worklets/plugin` Babel plugin (required by both Reanimated v4 and Skia; must be the last plugin in the list).
+
+Reanimated v4 requires the New Architecture, which SDK 57 uses by default, so
+no extra New Architecture opt-in is needed.
+
 ## Setup
 
 Dependencies are not installed yet in this repo (no `node_modules/`,
