@@ -144,11 +144,13 @@ duo/
 
 Goal: a correct repo skeleton with licensing, ignore rules, and a stub README.
 
-- [ ] Task 0.1: Create the full folder tree above. Add `.gitkeep` files in empty directories (`docs/images`, `docs/demo`, `app/assets/audio`). Do not run `git init`; if the directory is not already a git repo, say so in your output and let me initialize it.
-- [ ] Task 0.2: Add `.gitignore` covering Python (`__pycache__`, `.venv`, `*.db`, `.env`), Node/Expo (`node_modules`, `.expo`, `dist`, `*.log`), and build artifacts. Verify with `git status` that `.env` and `*.db` do not appear as untracked.
-- [ ] Task 0.3: Add `LICENSE` with the MIT license, copyright "Int Space (Vinayak Kempawad, Ankit Kumar, Sanjay Rohith, Abhishek Raj)". Add `LICENSE-HARDWARE` with a one-paragraph note that published hardware design files are under CERN-OHL-S-2.0, with a link placeholder.
-- [ ] Task 0.4: Add `.env.example` with `DUO_MODEL=llama3.2:3b`, `DUO_EMBED_MODEL=nomic-embed-text`, `OLLAMA_BASE_URL=http://localhost:11434/v1`, `DUO_DB_PATH=./duo.db`, `DUO_SERVER_HOST=0.0.0.0`, `DUO_SERVER_PORT=8000`.
-- [ ] Task 0.5: Write a stub `README.md` with the title, the one-line product statement, and a "Work in progress" banner. The full README is Phase 10.
+- [x] Task 0.1: Create the full folder tree above. Add `.gitkeep` files in empty directories (`docs/images`, `docs/demo`, `app/assets/audio`). Do not run `git init`; if the directory is not already a git repo, say so in your output and let me initialize it.
+  - DONE (2026-08-11): repo was already a git repo. `server/` was already populated by Phases 1-4; added the remaining skeleton (`app/`, `firmware/`, `docs/images`, `docs/diagrams`, `docs/demo`, `server/duo_server/games`) with `.gitkeep` in each still-empty directory. Directory-only for future-phase content — files like `app/package.json`, `firmware/*.ino`, `docs/PROTOCOL.md` are created in their own phases, not fabricated ahead of time.
+- [x] Task 0.2: Add `.gitignore` covering Python (`__pycache__`, `.venv`, `*.db`, `.env`), Node/Expo (`node_modules`, `.expo`, `dist`, `*.log`), and build artifacts. Verify with `git status` that `.env` and `*.db` do not appear as untracked.
+  - DONE (2026-08-11, prior to formal Phase 0 execution): added ahead of schedule while cleaning up stray build artifacts. Re-verified here: touching `.env` and `server/duo.db` produces no untracked entries in `git status`.
+- [x] Task 0.3: Add `LICENSE` with the MIT license, copyright "Int Space (Vinayak Kempawad, Ankit Kumar, Sanjay Rohith, Abhishek Raj)". Add `LICENSE-HARDWARE` with a one-paragraph note that published hardware design files are under CERN-OHL-S-2.0, with a link placeholder.
+- [x] Task 0.4: Add `.env.example` with `DUO_MODEL=llama3.2:3b`, `DUO_EMBED_MODEL=nomic-embed-text`, `OLLAMA_BASE_URL=http://localhost:11434/v1`, `DUO_DB_PATH=./duo.db`, `DUO_SERVER_HOST=0.0.0.0`, `DUO_SERVER_PORT=8000`.
+- [x] Task 0.5: Write a stub `README.md` with the title, the one-line product statement, and a "Work in progress" banner. The full README is Phase 10.
 
 Definition of Done (Phase 0):
 
