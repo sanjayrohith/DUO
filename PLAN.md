@@ -315,7 +315,7 @@ ESP32-C6 library notes (verify against installed versions):
 - In PlatformIO, mainline espressif32 lacks the Arduino framework for the C6; use the pioarduino fork. The Arduino IDE compiles the C6 directly.
 - The C6 Wi-Fi driver has had rough edges in specific scenarios (deep sleep, coexistence, provisioning). Use a recent core and bench-test STA stability on the actual board.
 
-- [ ] Task 6.1: Write `docs/PROTOCOL.md` defining the message format. Phone to ESP32, roughly 10 Hz:
+- [x] Task 6.1: Write `docs/PROTOCOL.md` defining the message format. Phone to ESP32, roughly 10 Hz:
 
 ```
 TRACKING,X:0.52      # person present, normalized bbox center X in [0,1]
@@ -326,11 +326,14 @@ PING                 # keepalive
 
 ESP32 to phone (optional telemetry): `STATE,IDLE|FOUND|TRACKING|LOST` and `ANGLE,pan:12,tilt:-4`. Document that X is the normalized horizontal center of the nearest/largest person: 0.0 far left, 1.0 far right, 0.5 centered. Also accept the shorthand `X:0.52` form from the existing head-tracking spec.
 
-- [ ] Task 6.2: Write `firmware/duo_firmware/config.h` with Wi-Fi SSID/password placeholders, servo GPIO pins (verify first against the actual Glyph-C6 wiring), pan limits plus/minus 40 degrees, tilt limits plus/minus 30 degrees, `KP`, dead zone 0.10, center 0.50, lost timeout 1500 ms.
-- [ ] Task 6.3: Write `firmware/duo_firmware/tracking.h` implementing the controller exactly as specified: `error = personX - 0.50`; if `abs(error) < 0.10` hold (dead zone); else `servoCommand = KP * error`, clamped to plus/minus 40 degrees pan; state machine IDLE, FOUND, TRACKING, LOST; on LOST or 1500 ms of silence, ease back to center. Tilt may hold center in v1; document that.
-- [ ] Task 6.4: Write `firmware/duo_firmware/duo_firmware.ino`: connect to Wi-Fi, start a WebSocket server, parse `TRACKING,X:` / `X:` / `LOST` / `CENTER`, feed the controller, drive both MG90S servos via `ESP32Servo`, and print the assigned IP to serial.
-- [ ] Task 6.5: Write `firmware/README.md`: board selection, required core version, exact library names and versions, setting Wi-Fi credentials, flashing, and reading the device IP from serial. Include the verify-first flags for GPIO pins and the arduinoWebSockets RNG patch.
+- [x] Task 6.2: Write `firmware/duo_firmware/config.h` with Wi-Fi SSID/password placeholders, servo GPIO pins (verify first against the actual Glyph-C6 wiring), pan limits plus/minus 40 degrees, tilt limits plus/minus 30 degrees, `KP`, dead zone 0.10, center 0.50, lost timeout 1500 ms.
+  - NOTE: `SERVO_PAN_PIN`/`SERVO_TILT_PIN` are placeholders, clearly marked `TODO: VERIFY FIRST` — not confirmed against real Glyph-C6 wiring (no hardware access in this environment). `KP` defaults to 80.0 (maps the full +/-0.5 error range to roughly the pan limit) but is untuned; also flagged TODO.
+- [x] Task 6.3: Write `firmware/duo_firmware/tracking.h` implementing the controller exactly as specified: `error = personX - 0.50`; if `abs(error) < 0.10` hold (dead zone); else `servoCommand = KP * error`, clamped to plus/minus 40 degrees pan; state machine IDLE, FOUND, TRACKING, LOST; on LOST or 1500 ms of silence, ease back to center. Tilt may hold center in v1; document that.
+- [x] Task 6.4: Write `firmware/duo_firmware/duo_firmware.ino`: connect to Wi-Fi, start a WebSocket server, parse `TRACKING,X:` / `X:` / `LOST` / `CENTER`, feed the controller, drive both MG90S servos via `ESP32Servo`, and print the assigned IP to serial.
+  - NOTE: used `ESP32Async/ESPAsyncWebServer` + `ESP32Async/AsyncTCP` per the plan's explicit recommendation (not `arduinoWebSockets`), so the RNG patch does not apply here — documented as an alternative-library note in `firmware/README.md` instead.
+- [x] Task 6.5: Write `firmware/README.md`: board selection, required core version, exact library names and versions, setting Wi-Fi credentials, flashing, and reading the device IP from serial. Include the verify-first flags for GPIO pins and the arduinoWebSockets RNG patch.
 - [ ] Task 6.6: Verify first (hardware). With servos connected, send `TRACKING,X:0.2`, `X:0.8`, and `LOST` from a WebSocket test client and confirm the pan servo moves within limits, respects the dead zone near 0.5, and recenters after 1.5 s of silence. Record the KP that gives smooth, non-jittery motion.
+  - BLOCKED: no ESP32-C6 hardware, servos, or Arduino toolchain available in this environment. Firmware has been written and reviewed against the spec but never compiled or run on a device. Left unchecked — do not treat 6.1-6.5 as validated hardware behavior, only as reviewed source. Do this on the actual board before the Phase 6 Definition of Done can be considered met.
 
 Definition of Done (Phase 6):
 
