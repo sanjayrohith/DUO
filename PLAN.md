@@ -248,20 +248,23 @@ Definition of Done (Phase 3):
 
 Goal: DUO remembers the user across sessions using structured SQLite tables plus sqlite-vec semantic recall.
 
-- [ ] Task 4.1: Verify first. Confirm the `sqlite-vec` Python package installs and loads on the target server (especially Raspberry Pi arm64). Write a throwaway script creating a vec table and running a nearest-neighbor query. If it fails on the Pi, fall back to storing embeddings as blobs with brute-force cosine similarity in Python, and note this in `server/README.md`.
-- [ ] Task 4.2: Implement `duo_server/memory/db.py`: open SQLite at `DUO_DB_PATH`, enable WAL mode, load sqlite-vec, and create tables on first run:
+- [x] Task 4.1: Verify first. Confirm the `sqlite-vec` Python package installs and loads on the target server (especially Raspberry Pi arm64). Write a throwaway script creating a vec table and running a nearest-neighbor query. If it fails on the Pi, fall back to storing embeddings as blobs with brute-force cosine similarity in Python, and note this in `server/README.md`.
+  - DONE (2026-08-11), partial hardware coverage: verified on x86_64 dev machine only — sqlite-vec 0.1.9 loads, `vec0` table creates, KNN query returns correctly ranked neighbors. Not yet re-verified on Raspberry Pi arm64 (the real target); no fallback needed so far. Found and documented a real query-shape constraint (`LIMIT` must sit directly on the KNN query) in `server/README.md` section 6.
+- [x] Task 4.2: Implement `duo_server/memory/db.py`: open SQLite at `DUO_DB_PATH`, enable WAL mode, load sqlite-vec, and create tables on first run:
   - `users(id, name, created_at)`
   - `sessions(id, user_id, started_at, ended_at, game, notes)`
   - `scores(id, session_id, game, metric, value, recorded_at)` (metrics such as `reach_cm`, `reaction_ms`, `best_streak`)
   - `exercises(id, name, description)`
   - `preferences(user_id, key, value)`
   - `memories(id, user_id, text, created_at)` plus a sqlite-vec virtual table `memories_vec(embedding float[768])` keyed to `memories.id`. Dimension 768 matches nomic-embed-text.
-- [ ] Task 4.3: Implement `duo_server/memory/structured.py`: `start_session`, `end_session`, `record_score`, `get_best(user_id, game, metric)`, `get_recent_sessions(user_id, n)`, `set_preference`, `get_preferences`. `get_best` covers the "range reached vs previous best" need in Catch the Light.
-- [ ] Task 4.4: Implement `duo_server/memory/semantic.py`: `add_memory(user_id, text)` embeds via `nomic-embed-text` and stores in `memories` and `memories_vec`; `recall(user_id, query, k=3)` embeds the query and returns top-k texts. Keep k small to protect the prompt budget.
-- [ ] Task 4.5: Update `/chat` to, each turn: retrieve preferences and last-best scores, semantic-recall top 3 memories, and inject a compact "What DUO remembers" block ahead of the user message. Keep it under a few hundred tokens.
-- [ ] Task 4.6: Add `POST /session/start`, `POST /session/end`, `POST /score`, and `GET /progress/{user_id}` (best scores plus recent sessions) so the phone can log results and show progress.
-- [ ] Task 4.7: Write `server/scripts/seed_demo_data.py` creating one demo user with sessions, scores, and memories so the demo and screenshots have realistic content.
-- [ ] Task 4.8: Add `server/tests/test_memory.py`: insert scores and assert `get_best` returns the max; add two memories and assert `recall` ranks the relevant one first (or that cosine ranking is correct under the fallback).
+- [x] Task 4.3: Implement `duo_server/memory/structured.py`: `start_session`, `end_session`, `record_score`, `get_best(user_id, game, metric)`, `get_recent_sessions(user_id, n)`, `set_preference`, `get_preferences`. `get_best` covers the "range reached vs previous best" need in Catch the Light.
+- [x] Task 4.4: Implement `duo_server/memory/semantic.py`: `add_memory(user_id, text)` embeds via `nomic-embed-text` and stores in `memories` and `memories_vec`; `recall(user_id, query, k=3)` embeds the query and returns top-k texts. Keep k small to protect the prompt budget.
+  - NOTE: embedding calls go through `/v1/embeddings` on `OLLAMA_BASE_URL`. `nomic-embed-text` is not pulled on the dev machine, so this has not been exercised against a live embedding model yet — `test_memory.py` verifies the recall ranking logic with a monkeypatched `_embed`. Pull `nomic-embed-text` and re-run `seed_demo_data.py` / `/chat` with a `user_id` to verify live.
+- [x] Task 4.5: Update `/chat` to, each turn: retrieve preferences and last-best scores, semantic-recall top 3 memories, and inject a compact "What DUO remembers" block ahead of the user message. Keep it under a few hundred tokens.
+  - NOTE: `/chat` now accepts an optional `user_id`; memory injection is skipped gracefully when absent (existing session_id-only callers keep working). Recall failures (e.g. embedding model unreachable) are caught so `/chat` degrades to preferences-only rather than erroring.
+- [x] Task 4.6: Add `POST /session/start`, `POST /session/end`, `POST /score`, and `GET /progress/{user_id}` (best scores plus recent sessions) so the phone can log results and show progress.
+- [x] Task 4.7: Write `server/scripts/seed_demo_data.py` creating one demo user with sessions, scores, and memories so the demo and screenshots have realistic content.
+- [x] Task 4.8: Add `server/tests/test_memory.py`: insert scores and assert `get_best` returns the max; add two memories and assert `recall` ranks the relevant one first (or that cosine ranking is correct under the fallback).
 
 Definition of Done (Phase 4):
 
