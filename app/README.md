@@ -37,7 +37,14 @@ npm install
 ## Development build
 
 Building a dev client needs either a local native prebuild or an EAS Build.
-Both are configured in `app.json` / `eas.json` (Task 7.2):
+Both are configured in `app.json` / `eas.json` (Task 7.2). `app.json` already
+declares the `react-native-vision-camera` config plugin and camera usage
+strings (iOS `NSCameraUsageDescription`, Android `CAMERA` permission) ahead
+of Phase 8 — **the plugin config is in place, but the `react-native-vision-camera`
+package itself is not installed yet** (that's Task 8.1). `expo prebuild` will
+fail on the plugin reference until that package is added as a dependency. A
+BLE config plugin is deferred until BLE is actually needed (documented as a
+no-Wi-Fi fallback only, out of scope for the current phases).
 
 ```bash
 # Local prebuild (generates ios/ and android/ native projects)
