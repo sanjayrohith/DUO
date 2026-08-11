@@ -1,0 +1,26 @@
+[project]
+name = "duo-server"
+version = "0.1.0"
+description = "DUO brain: FastAPI service wrapping Ollama with persona, memory, and progress persistence."
+requires-python = ">=3.11"
+dependencies = [
+    "fastapi>=0.141,<0.142",       # resolved: 0.141.1
+    "uvicorn[standard]>=0.52,<0.53", # resolved: 0.52.1
+    "httpx>=0.28,<0.29",            # resolved: 0.28.1
+    "sse-starlette>=3.4,<3.5",      # resolved: 3.4.8
+    "pydantic>=2.13,<3",            # resolved: 2.13.4
+    "pydantic-settings>=2.15,<3",   # resolved: 2.15.0
+    "python-dotenv>=1.0,<2",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8",
+]
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+include = ["duo_server*"]
