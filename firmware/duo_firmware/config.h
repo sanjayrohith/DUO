@@ -22,7 +22,10 @@
 #define TILT_LIMIT_DEG 30
 
 // --- Proportional controller ---
-#define KP 1.0f            // TODO: tune on hardware for smooth, non-jittery motion (Task 6.6)
+// servoCommand = KP * error, where error = personX - CENTER_X (range +/-0.5).
+// KP=80 maps the full error range to roughly the pan limit; TODO: tune on
+// hardware for smooth, non-jittery motion and record the chosen value (Task 6.6).
+#define KP 80.0f
 #define DEAD_ZONE 0.10f    // no movement when abs(personX - CENTER_X) < DEAD_ZONE
 #define CENTER_X 0.50f
 
