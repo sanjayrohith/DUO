@@ -282,10 +282,14 @@ Definition of Done (Phase 4):
 
 Goal: a server-side state machine driving INVITE, USER MOVES, DUO RESPONDS, POSITIVE FEEDBACK, NEW CHALLENGE, USER MOVES AGAIN, mapping game events to face states and spoken lines.
 
-- [ ] Task 5.1: Implement `duo_server/games/state.py` with enums for loop states and face states (Idle, Curious, Happy, Excited, Focused, Encouraging, Surprised, Failure, Success) and `next_line(context) -> {"text","face_state"}` composing an in-persona line, using the LLM plus templates for latency-sensitive short reactions ("Nice!", "One more?").
-- [ ] Task 5.2: Add `POST /interaction/event` accepting `{"session_id","game","event"}` where event is `invite`, `attempt_success`, `attempt_miss`, `new_best`, or `session_close`, returning `{"text","face_state"}`. Use templated lines for immediate reactions and the LLM only where a fuller sentence helps, to stay snappy on slow hardware.
-- [ ] Task 5.3: Enforce the no-medical-content rule here too: reactions never reference clinical metrics, and a miss yields encouragement rather than correction.
-- [ ] Task 5.4: Add `server/tests/test_interaction.py` asserting each event returns a valid face state from the allowed set and a non-empty line.
+- [x] Task 5.1: Implement `duo_server/games/state.py` with enums for loop states and face states (Idle, Curious, Happy, Excited, Focused, Encouraging, Surprised, Failure, Success) and `next_line(context) -> {"text","face_state"}` composing an in-persona line, using the LLM plus templates for latency-sensitive short reactions ("Nice!", "One more?").
+  - NOTE: persona loading was factored out of `duo_server/main.py` into `duo_server/persona/loader.py` (same behavior, just shared) so `games/state.py` could reuse `SYSTEM_PROMPT`/`FEW_SHOT_TURNS` without a circular import against `main.py`.
+- [x] Task 5.2: Add `POST /interaction/event` accepting `{"session_id","game","event"}` where event is `invite`, `attempt_success`, `attempt_miss`, `new_best`, or `session_close`, returning `{"text","face_state"}`. Use templated lines for immediate reactions and the LLM only where a fuller sentence helps, to stay snappy on slow hardware.
+  - NOTE: `attempt_success`/`attempt_miss`/`new_best` are always templated (no LLM call). `invite`/`session_close` try the LLM first and fall back to a template if Ollama returns the connection-failure fallback line.
+- [x] Task 5.3: Enforce the no-medical-content rule here too: reactions never reference clinical metrics, and a miss yields encouragement rather than correction.
+  - DONE: satisfied by construction in `games/state.py` — the hand-authored templates for `attempt_miss` never mention numbers or correctness ("No worries at all. One more try?"), and `test_interaction.py::test_attempt_miss_is_encouraging_not_corrective` guards against corrective wording.
+- [x] Task 5.4: Add `server/tests/test_interaction.py` asserting each event returns a valid face state from the allowed set and a non-empty line.
+  - NOTE: not yet re-run (pytest wasn't executed this pass per your instruction to focus on coding only); also added a test proving the three templated events never call `stream_chat`, directly verifying the DoD's "templated path" requirement.
 
 Definition of Done (Phase 5):
 
