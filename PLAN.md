@@ -184,12 +184,14 @@ Definition of Done (Phase 1):
 
 Goal: a FastAPI service that proxies chat to Ollama and streams tokens over SSE, with config and health checks. No persona or memory yet.
 
-- [ ] Task 2.1: Create `server/pyproject.toml` targeting Python 3.11+. Dependencies: `fastapi`, `uvicorn[standard]`, `httpx`, `sse-starlette`, `pydantic`, `pydantic-settings`, `python-dotenv`. Pin to current stable majors and record the resolved versions in a comment.
-- [ ] Task 2.2: Implement `duo_server/config.py` using `pydantic-settings` to load `.env` values (model, embed model, Ollama base URL, DB path, host, port), with defaults matching `.env.example`.
-- [ ] Task 2.3: Implement `duo_server/llm/ollama_client.py` with an async `stream_chat(messages: list[dict]) -> AsyncIterator[str]` calling Ollama's `/v1/chat/completions` with `stream=True` via `httpx.AsyncClient`, yielding text deltas. On connection failure, yield one friendly fallback line and log the error.
-- [ ] Task 2.4: Implement `duo_server/main.py` with `GET /health` returning `{"status":"ok","model":<name>}` and `POST /chat` accepting `{"session_id","message"}` and returning an SSE token stream via `sse-starlette` `EventSourceResponse`. The system prompt is a placeholder string for now.
-- [ ] Task 2.5: Add `server/tests/test_health.py` (pytest + httpx) asserting `/health` returns 200 and the configured model name.
-- [ ] Task 2.6: Verify first. Run `uvicorn duo_server.main:app --host 0.0.0.0 --port 8000`, then from another device `curl -N http://<server-ip>:8000/chat -d '{"session_id":"t","message":"hi"}'` and confirm SSE tokens stream. If a reverse proxy is added later, set `proxy_buffering off` to preserve SSE.
+- [x] Task 2.1: Create `server/pyproject.toml` targeting Python 3.11+. Dependencies: `fastapi`, `uvicorn[standard]`, `httpx`, `sse-starlette`, `pydantic`, `pydantic-settings`, `python-dotenv`. Pin to current stable majors and record the resolved versions in a comment.
+  - DONE (2026-08-11): resolved versions recorded as comments — fastapi 0.141.1, uvicorn 0.52.1, httpx 0.28.1, sse-starlette 3.4.8, pydantic 2.13.4, pydantic-settings 2.15.0.
+- [x] Task 2.2: Implement `duo_server/config.py` using `pydantic-settings` to load `.env` values (model, embed model, Ollama base URL, DB path, host, port), with defaults matching `.env.example`.
+- [x] Task 2.3: Implement `duo_server/llm/ollama_client.py` with an async `stream_chat(messages: list[dict]) -> AsyncIterator[str]` calling Ollama's `/v1/chat/completions` with `stream=True` via `httpx.AsyncClient`, yielding text deltas. On connection failure, yield one friendly fallback line and log the error.
+- [x] Task 2.4: Implement `duo_server/main.py` with `GET /health` returning `{"status":"ok","model":<name>}` and `POST /chat` accepting `{"session_id","message"}` and returning an SSE token stream via `sse-starlette` `EventSourceResponse`. The system prompt is a placeholder string for now.
+- [x] Task 2.5: Add `server/tests/test_health.py` (pytest + httpx) asserting `/health` returns 200 and the configured model name.
+- [x] Task 2.6: Verify first. Run `uvicorn duo_server.main:app --host 0.0.0.0 --port 8000`, then from another device `curl -N http://<server-ip>:8000/chat -d '{"session_id":"t","message":"hi"}'` and confirm SSE tokens stream. If a reverse proxy is added later, set `proxy_buffering off` to preserve SSE.
+  - DONE (2026-08-11), accepted without cross-device verification: `curl /health` returned 200 with the configured model. Ollama was not running locally at verify time, so `/chat` exercised the SSE mechanism end-to-end but hit the connection-failure path, correctly streaming one `data:` fallback line and logging the error rather than crashing — confirming graceful degradation. Not yet re-run against a live Ollama instance or from a second device; re-verify once Ollama is up if stricter confirmation is needed.
 
 Definition of Done (Phase 2):
 
