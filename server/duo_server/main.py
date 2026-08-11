@@ -1,3 +1,6 @@
+import json
+from pathlib import Path
+
 from fastapi import FastAPI
 from pydantic import BaseModel
 from sse_starlette.sse import EventSourceResponse
@@ -7,7 +10,8 @@ from duo_server.llm.ollama_client import stream_chat
 
 app = FastAPI(title="DUO Brain")
 
-SYSTEM_PROMPT_PLACEHOLDER = "You are DUO, a warm and playful rehabilitation companion."
+SYSTEM_PROMPT = Path(settings.duo_persona_prompt_path).read_text()
+FEW_SHOT_TURNS = json.loads(Path(settings.duo_persona_few_shot_path).read_text())
 
 
 class ChatRequest(BaseModel):
@@ -23,7 +27,8 @@ async def health():
 @app.post("/chat")
 async def chat(request: ChatRequest):
     messages = [
-        {"role": "system", "content": SYSTEM_PROMPT_PLACEHOLDER},
+        {"role": "system", "content": SYSTEM_PROMPT},
+        *FEW_SHOT_TURNS,
         {"role": "user", "content": request.message},
     ]
 
