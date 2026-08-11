@@ -206,7 +206,7 @@ Definition of Done (Phase 2):
 
 Goal: DUO's personality as a versioned, editable file, wired into the chat endpoint with few-shot examples.
 
-- [ ] Task 3.1: Write `server/duo_server/persona/duo_system_prompt.md`. It must encode: DUO is a warm, playful, encouraging companion for someone in rehabilitation; short spoken-style replies (1-3 sentences); never gives medical advice, diagnosis, or exercise prescriptions; redirects medical questions to the user's physiotherapist; celebrates effort over outcome; follows the invite/respond/positive-feedback/new-challenge loop; uses companion phrases like "Want to play?", "Nice!", "One more?", "Same time tomorrow?"; never shames a missed target. Include an explicit "never say" list.
+- [x] Task 3.1: Write `server/duo_server/persona/duo_system_prompt.md`. It must encode: DUO is a warm, playful, encouraging companion for someone in rehabilitation; short spoken-style replies (1-3 sentences); never gives medical advice, diagnosis, or exercise prescriptions; redirects medical questions to the user's physiotherapist; celebrates effort over outcome; follows the invite/respond/positive-feedback/new-challenge loop; uses companion phrases like "Want to play?", "Nice!", "One more?", "Same time tomorrow?"; never shames a missed target. Include an explicit "never say" list.
 
 Skeleton to include:
 
@@ -228,10 +228,12 @@ When asked something medical:
 - "That's one for your physio. I'm here for the fun part."
 ```
 
-- [ ] Task 3.2: Write `server/duo_server/persona/few_shot.json` with 8-12 short example turns showing DUO's tone across the face and interaction states (invite, praise, gentle retry, session close). These load as prior turns, not training data.
-- [ ] Task 3.3: Update `duo_server/main.py` to load the system prompt file and few-shot turns and prepend them to every `/chat` request. Make the persona file path a config value.
-- [ ] Task 3.4: Add `server/tests/test_persona.py` sending a medical question ("should I increase my ankle weights?") and asserting the reply carries no prescriptive medical directive and does defer to a physio. Model output varies, so assert against a small allowed pattern set and mark the test advisory (skip-on-flaky) rather than a hard gate.
-- [ ] Task 3.5: Verify first. Chat several turns manually and confirm replies stay short, warm, and non-medical. Record 3 sample exchanges in `docs/ARCHITECTURE.md` under "Persona behavior".
+- [x] Task 3.2: Write `server/duo_server/persona/few_shot.json` with 8-12 short example turns showing DUO's tone across the face and interaction states (invite, praise, gentle retry, session close). These load as prior turns, not training data.
+- [x] Task 3.3: Update `duo_server/main.py` to load the system prompt file and few-shot turns and prepend them to every `/chat` request. Make the persona file path a config value.
+- [x] Task 3.4: Add `server/tests/test_persona.py` sending a medical question ("should I increase my ankle weights?") and asserting the reply carries no prescriptive medical directive and does defer to a physio. Model output varies, so assert against a small allowed pattern set and mark the test advisory (skip-on-flaky) rather than a hard gate.
+  - DONE (2026-08-11): test passes against `llama3.2:1b`; skips gracefully to the fallback-line check if Ollama is unreachable.
+- [x] Task 3.5: Verify first. Chat several turns manually and confirm replies stay short, warm, and non-medical. Record 3 sample exchanges in `docs/ARCHITECTURE.md` under "Persona behavior".
+  - DONE (2026-08-11), against `llama3.2:1b` (3B not yet pulled): replies stayed short and warm; the first medical-redirect phrasing tried was vague on the 1B model, a second phrasing deferred cleanly — noted as a 1B-quality limitation to re-check once `llama3.2:3b` is available. See `docs/ARCHITECTURE.md`.
 
 Definition of Done (Phase 3):
 
