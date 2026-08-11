@@ -11,6 +11,7 @@ dependencies = [
     "pydantic>=2.13,<3",            # resolved: 2.13.4
     "pydantic-settings>=2.15,<3",   # resolved: 2.15.0
     "python-dotenv>=1.0,<2",
+    "sqlite-vec>=0.1,<0.2",          # resolved: 0.1.9
 ]
 
 [project.optional-dependencies]
