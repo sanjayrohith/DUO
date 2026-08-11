@@ -1,0 +1,11 @@
+# Hardware License
+
+Published hardware design files in this repository (enclosure/mounting
+designs, wiring diagrams, bill of materials, and related mechanical/electrical
+design artifacts) are licensed under the CERN Open Hardware Licence Version 2
+- Strongly Reciprocal (CERN-OHL-S-2.0), unless a file states otherwise.
+
+Full license text: <https://ohwr.org/cern_ohl_s_v2.txt> <!-- TODO: confirm link -->
+
+This does not apply to the software in this repository, which is MIT
+licensed — see `LICENSE`.
