@@ -1,0 +1,26 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+*.db
+*.db-wal
+*.db-shm
+.env
+
+# Node / Expo
+node_modules/
+.expo/
+dist/
+*.log
+npm-debug.log*
+
+# Build artifacts
+build/
+*.o
+*.bin
