@@ -176,3 +176,22 @@ export async function sendInteractionEvent(
     body: JSON.stringify({ session_id: sessionId, game, event }),
   });
 }
+
+export async function setPreference(
+  baseUrl: string,
+  userId: number,
+  key: string,
+  value: string
+): Promise<{ status: string }> {
+  return requestJson(baseUrl, "/preferences", {
+    method: "POST",
+    body: JSON.stringify({ user_id: userId, key, value }),
+  });
+}
+
+export async function getPreferences(
+  baseUrl: string,
+  userId: number
+): Promise<Record<string, string>> {
+  return requestJson(baseUrl, `/preferences/${userId}`);
+}

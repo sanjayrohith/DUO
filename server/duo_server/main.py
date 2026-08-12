@@ -56,6 +56,12 @@ class InteractionEventRequest(BaseModel):
     event: str
 
 
+class PreferenceRequest(BaseModel):
+    user_id: int
+    key: str
+    value: str
+
+
 @app.get("/health")
 async def health():
     return {"status": "ok", "model": settings.duo_model}
@@ -148,3 +154,14 @@ async def interaction_event(request: InteractionEventRequest):
         return await next_line({"event": request.event, "game": request.game})
     except ValueError as exc:
         raise HTTPException(status_code=400, detail=str(exc))
+
+
+@app.post("/preferences")
+async def set_preference(request: PreferenceRequest):
+    structured.set_preference(app.state.db, request.user_id, request.key, request.value)
+    return {"status": "ok"}
+
+
+@app.get("/preferences/{user_id}")
+async def get_preferences(user_id: int):
+    return structured.get_preferences(app.state.db, user_id)
