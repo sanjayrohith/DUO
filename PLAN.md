@@ -413,15 +413,25 @@ Each game logs a session (`/session/start`, `/session/end`) and scores (`/score`
 
 Audio for Air Piano: use `expo-audio`, the current Expo audio module. The older `expo-av` Audio API was replaced by `expo-audio` in SDK 53 and Expo will not publish new `expo-av` versions for SDK 54 and beyond, so do not build new audio on `expo-av`. Preload and reuse short note sound objects rather than creating one per hit, and verify first that rapid and simultaneous note playback latency is acceptable on the demo device.
 
-- [ ] Task 9.1: Follow Me. DUO invites, the person follows DUO's movement (the remote-controlled base is out of software scope, so this game orchestrates invites, timing, and encouragement and uses head tracking so DUO watches the person). Track minutes engaged as the session metric.
-- [ ] Task 9.2: Air Piano. Map hand position to large virtual keys sized to the calibrated range of motion; play notes via `expo-audio`. Score is notes hit over notes attempted, or melody completion.
-- [ ] Task 9.3: Catch the Light. Show a target the user reaches toward; detect reach distance via hand or person tracking; compare to previous best via `get_best` and celebrate a new best with the Success face and an Excited reaction.
-- [ ] Task 9.4: Boxing Partner. Show LEFT / RIGHT / DUCK prompts in a reaction sequence; detect responses via pose or hand tracking, with large on-screen tap zones as fallback; track correct reactions and streak.
-- [ ] Task 9.5: F1 Reaction Game. LEFT / RIGHT / BRAKE / GO prompts with reaction time in milliseconds; store best and average as scores.
-- [ ] Task 9.6: Memory Challenge. Show a color sequence, the user repeats it (tap zones or gestures), sequence grows each round; store best sequence length.
-- [ ] Task 9.7: A shared game shell component handling the interaction loop wiring (invite, attempt, reaction, new challenge), session logging, and face-state updates, so each game implements only its own mechanic.
+- [x] Task 9.1: Follow Me. DUO invites, the person follows DUO's movement (the remote-controlled base is out of software scope, so this game orchestrates invites, timing, and encouragement and uses head tracking so DUO watches the person). Track minutes engaged as the session metric.
+  - NOTE: introduces the shared shell (`useGameSession`, Task 9.7) as its first consumer. Wires `useTracking` from Phase 8 for the "DUO watches the person" head-tracking behavior — inherits Phase 8's unresolved detector integration (Task 8.1), so tracking UI shows a live status but has no real camera feed behind it yet.
+- [x] Task 9.2: Air Piano. Map hand position to large virtual keys sized to the calibrated range of motion; play notes via `expo-audio`. Score is notes hit over notes attempted, or melody completion.
+  - NOTE: primary input is large tap zones (verifiable interaction, matches the plan's own fallback pattern for Boxing Partner, extended here since Air Piano's "keys" are inherently tap-sized targets); `pressKey()` is the shared entry point so hand-tracking input (`keyIndexForHand` from Phase 8) can drive the same function once wired. **Verify-first not done**: no note audio assets exist in `app/assets/audio/` yet, and rapid/simultaneous playback latency has not been checked on a device (none available).
+- [x] Task 9.3: Catch the Light. Show a target the user reaches toward; detect reach distance via hand or person tracking; compare to previous best via `get_best` and celebrate a new best with the Success face and an Excited reaction.
+  - NOTE: reach input is a touch-drag gesture (`PanResponder`) against a target on a track — a real, verifiable interaction — rather than camera-driven reach, again because Phase 8's detector is unresolved. Best-comparison fetches `/progress/{user_id}` client-side rather than a dedicated `get_best` endpoint (none exists on the backend; `/progress` already exposes best scores per game/metric from Phase 4).
+- [x] Task 9.4: Boxing Partner. Show LEFT / RIGHT / DUCK prompts in a reaction sequence; detect responses via pose or hand tracking, with large on-screen tap zones as fallback; track correct reactions and streak.
+  - NOTE: implemented directly against the plan's own documented fallback (tap zones), since pose/hand-tracking input has the same Phase 8 blocker as the other games.
+- [x] Task 9.5: F1 Reaction Game. LEFT / RIGHT / BRAKE / GO prompts with reaction time in milliseconds; store best and average as scores.
+- [x] Task 9.6: Memory Challenge. Show a color sequence, the user repeats it (tap zones or gestures), sequence grows each round; store best sequence length.
+- [x] Task 9.7: A shared game shell component handling the interaction loop wiring (invite, attempt, reaction, new challenge), session logging, and face-state updates, so each game implements only its own mechanic.
+  - NOTE: `src/components/games/useGameSession.ts`, built during Task 9.1 (first consumer) and reused unchanged by all six games — each game file only implements its own mechanic and scoring, as intended.
 
-Definition of Done (Phase 9):
+Definition of Done (Phase 9) — **not yet met, source-reviewed only**: all six
+games are written and wired to the shared session shell, `/interaction/event`,
+and `/score`, but `npm install` has never been run against `app/package.json`
+(carried over from Phase 7) and nothing has executed on a device or
+simulator. "Runs end to end" below describes intended behavior from reading
+the code, not an observed result.
 
 - All six experiences run end to end and log sessions and scores.
 - Each shows appropriate face states and in-character reactions.
