@@ -3,6 +3,7 @@ from enum import Enum
 
 from duo_server.llm.ollama_client import FALLBACK_LINE, stream_chat
 from duo_server.persona.loader import FEW_SHOT_TURNS, SYSTEM_PROMPT
+from duo_server.persona.safety_filter import check_and_log
 
 
 class LoopState(str, Enum):
@@ -86,6 +87,7 @@ async def _generate_via_llm(event: str, game: str) -> str:
     text = "".join([token async for token in stream_chat(messages)])
     if text.strip() == FALLBACK_LINE:
         return random.choice(LLM_EVENT_FALLBACK_TEMPLATES[event]).format(game=game)
+    check_and_log(text, context=f"interaction/event:{event}")
     return text.strip()
 
 

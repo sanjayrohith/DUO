@@ -11,6 +11,7 @@ from duo_server.memory import structured
 from duo_server.memory.db import get_connection, init_db
 from duo_server.memory.semantic import recall
 from duo_server.persona.loader import FEW_SHOT_TURNS, SYSTEM_PROMPT
+from duo_server.persona.safety_filter import check_and_log
 
 MEMORY_RECALL_K = 3
 
@@ -100,8 +101,11 @@ async def chat(request: ChatRequest):
     messages.append({"role": "user", "content": request.message})
 
     async def event_generator():
+        full_reply = []
         async for token in stream_chat(messages):
+            full_reply.append(token)
             yield {"data": token}
+        check_and_log("".join(full_reply), context="/chat")
 
     return EventSourceResponse(event_generator())
 
