@@ -497,16 +497,21 @@ Definition of Done (Phase 10):
 
 Only pursue this if the system-prompt and memory persona is measurably not enough. Fine-tuning shapes tone and behavior, not knowledge; knowledge and progress stay in memory. This phase produces an optional adapter and does not change the shipped default unless the adapter is actually trained and evaluated.
 
-- [ ] Task 11.1: Establish a baseline. Write 20-30 evaluation prompts (invites, praise, gentle retry, medical deflection, session close) and score the current system-prompt output for tone and safety. Continue only if the baseline is inadequate.
+- [x] Task 11.1: Establish a baseline. Write 20-30 evaluation prompts (invites, praise, gentle retry, medical deflection, session close) and score the current system-prompt output for tone and safety. Continue only if the baseline is inadequate.
+  - DONE (2026-08-12): actually run, twice, against live `llama3.2:1b` (`server/scripts/evaluate_persona_baseline.py`, 24 prompts across 5 categories + 2 general). Results and reasoning: `docs/PERSONA_BASELINE.md`, raw output: `docs/persona_baseline_report.json`. Zero prescriptive/clinical replies across both runs (18-19/24 passed); the only weak category was the exact "defer to physio" phrasing on the 1B fallback model, not a safety violation. **Baseline judged adequate — gate does not authorize continuing to 11.2-11.4.**
 - [ ] Task 11.2: Write `server/scripts/build_finetune_dataset.py` producing 500-2000 ChatML examples of DUO in character (short, warm, non-medical, loop-driven), covering all face states and the never-rules, including hard negatives (medical question to deflection).
+  - NOT PURSUED: gated on Task 11.1 finding the baseline inadequate, which it did not. See `docs/PERSONA_BASELINE.md` "Decision" section.
 - [ ] Task 11.3: Document a QLoRA run with Unsloth on a small instruct base (Llama 3.2 3B or Qwen 2.5 3B), 4-bit, rank 16, on a free Colab T4 or a rented GPU. Keep it a documented script, not a repo dependency. Follow Unsloth's import-order rule (import unsloth before transformers/trl).
+  - NOT PURSUED, same gate. Also: this environment has no GPU/Colab access to ever run what would be documented, so writing untested training instructions would be unverified scaffolding, not a real deliverable.
 - [ ] Task 11.4: Evaluate the adapter against the Task 11.1 set and the untuned baseline. A fine-tune that does not improve the target metric has failed regardless of training loss. Keep the adapter only if it improves tone and safety without regression. Export to GGUF and document loading it in Ollama as an alternative model.
+  - NOT PURSUED: no adapter was trained (11.2/11.3 not pursued), so there is nothing to evaluate.
 - [ ] Task 11.5: Update the README persona note only if an adapter is actually trained and kept, so no claim is unsupported.
+  - NOT PURSUED: condition not met (no adapter trained or kept). README/`docs/ARCHITECTURE.md` personalization notes remain unchanged, honestly reflecting no LoRA in use.
 
-Definition of Done (Phase 11):
+Definition of Done (Phase 11) — met via the "stop" branch, not the "ship an adapter" branch:
 
-- A reproducible dataset script and a documented training recipe exist.
-- Any kept adapter beats the baseline; otherwise record "system prompt plus memory is sufficient".
+- A reproducible dataset script and a documented training recipe exist. **N/A** — gated out by Task 11.1's result; see above.
+- Any kept adapter beats the baseline; otherwise record "system prompt plus memory is sufficient". **Recorded**: `docs/PERSONA_BASELINE.md` concludes system prompt + few-shot + memory is sufficient, with a cheaper recommended next step (re-test on `llama3.2:3b`, strengthen few-shot) before ever reconsidering fine-tuning.
 - Commit Sheet printed.
 
 ---
