@@ -87,6 +87,18 @@ is actually trained and shown to beat that baseline. No adapter exists in
 this repo. Any future README claim about a fine-tuned persona should only be
 made if Phase 11 actually produces and keeps one.
 
+Phase 11's baseline was actually run (not skipped) — see
+[`docs/PERSONA_BASELINE.md`](PERSONA_BASELINE.md). Result: zero
+prescriptive/clinical replies across 24 evaluation prompts (the
+safety-critical property), with one specific weak spot — the 1B fallback
+model doesn't reliably use the exact "defer to your physio" phrasing,
+though it never fails to decline the medical question. That's a
+model-capacity gap on the low-latency fallback, evaluated on the wrong
+model for a fine-tuning decision (the 3B default hasn't been tested), so
+fine-tuning was not pursued. Tasks 11.2-11.4 (dataset script, training
+recipe, adapter eval) were deliberately left undone rather than written
+without ever being run.
+
 ## Why this works (references)
 
 Citations backing the "Why this works" section of the README:
