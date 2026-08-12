@@ -3,6 +3,7 @@ import { Button, StyleSheet, Text, TextInput, View } from "react-native";
 
 import { checkHealth } from "../transport/brainClient";
 import { ESPSocket } from "../transport/espSocket";
+import { DISCLAIMER_TEXT } from "../state/disclaimerStore";
 import {
   brainBaseUrl,
   ConnectionSettings,
@@ -93,6 +94,9 @@ export default function SettingsScreen() {
       <Text style={styles.status}>ESP32: {espStatus}</Text>
 
       <Button title="Save settings" onPress={handleSave} />
+
+      <Text style={styles.label}>Safety</Text>
+      <Text style={styles.safetyText}>{DISCLAIMER_TEXT}</Text>
     </View>
   );
 }
@@ -107,4 +111,5 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   status: { color: "#555", marginBottom: 8 },
+  safetyText: { color: "#555", fontSize: 13 },
 });
