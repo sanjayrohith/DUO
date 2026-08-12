@@ -13,7 +13,9 @@
     "@react-native-async-storage/async-storage": "^3.1.1",
     "react-native-vision-camera": "^5.2.2",
     "react-native-fast-tflite": "^3.0.1",
-    "react-native-nitro-modules": "^0.36.5"
+    "react-native-nitro-modules": "^0.36.5",
+    "expo-audio": "~57.0.3",
+    "expo-asset": "~57.0.10"
   },
   "devDependencies": {
     "@types/react": "~19.2.2",

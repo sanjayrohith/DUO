@@ -84,6 +84,23 @@ device-presence hooks into one status (`checking` / `ready` /
 `permission_denied` / `no_device`), so camera-dependent games have a single
 "camera unavailable" state to fall back on (Task 8.6).
 
+## Audio (Air Piano)
+
+`src/audio/piano.ts` uses **`expo-audio`** (`~57.0.3`), not `expo-av` — Expo
+replaced `expo-av`'s audio API with `expo-audio` in SDK 53 and stopped
+publishing new `expo-av` versions from SDK 54 onward. Note players are
+preloaded once via `createAudioPlayer()` and replayed with `seekTo(0)` +
+`play()` on each hit, rather than creating a new player per hit (the
+documented anti-pattern — it adds latency exactly when responsiveness
+matters most for a rhythm game).
+
+**Not yet done**: no actual note audio files exist in `app/assets/audio/`
+(still empty) — `PianoPlayer` takes `NoteSource[]` from the caller so it
+doesn't hardcode missing assets, but a real screen needs short note clips
+added there and `require()`'d. The plan's verify-first step — confirming
+rapid/simultaneous note playback latency is acceptable on the demo device —
+has not been done; no device is available in this environment.
+
 ## Setup
 
 Dependencies are not installed yet in this repo (no `node_modules/`,
