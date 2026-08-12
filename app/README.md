@@ -41,6 +41,49 @@ Versions installed (2026-08-11, checked against SDK 57 / RN 0.86.2 compat):
 Reanimated v4 requires the New Architecture, which SDK 57 uses by default, so
 no extra New Architecture opt-in is needed.
 
+## Computer vision path (Phase 8)
+
+`react-native-vision-camera` (v5.2.2) provides camera frames and frame
+processors. For the on-device detector that turns frames into person/hand
+positions, this repo picked **`react-native-fast-tflite`** (v3.0.1) over the
+MediaPipe-plugin alternative (`react-native-mediapipe`), because fast-tflite
+is built on Nitro Modules by the same author as vision-camera 5.x, so its
+native module generation matches vision-camera's current architecture.
+`react-native-mediapipe` was last published about a year before this decision
+and depends on the older `react-native-worklets-core` package rather than
+vision-camera 5.x's Nitro-based worklets — a real compatibility risk that
+hasn't been tested.
+
+**This choice is unverified** — Task 8.1 calls for standing up a minimal
+frame-processor screen on a real phone and confirming a usable detection rate
+(10-15 fps target) before committing to a detector. That hasn't been done in
+this environment (no physical device). Using `react-native-fast-tflite` also
+requires sourcing a pose/hand-landmark `.tflite` model file (e.g. a converted
+MediaPipe BlazePose/BlazeHand model) and writing the tensor-decoding glue
+that turns its raw output into the `BoundingBox`/`HandPoint` shapes below —
+neither is done yet.
+
+To keep the parts that *can* be written and reasoned about without hardware
+correct and testable, `src/vision/personTracking.ts` and
+`src/vision/handTracking.ts` are **detector-agnostic**: they consume plain
+bounding boxes / landmark points (whatever shape the eventual frame processor
+plugin emits, adapted at the call site) rather than importing
+`react-native-fast-tflite` directly. This means:
+
+- The normalization, low-pass filtering, LOST-timeout, and largest-bbox
+  selection logic in `personTracking.ts` is real, deterministic code —
+  independent of which detector library ends up feeding it.
+- The reach-zone mapping in `handTracking.ts` and calibration capture in
+  `calibration.ts` are likewise detector-independent.
+- Only the frame-processor wiring itself (Task 8.1's actual detector
+  integration, decoding `.tflite` output into these shapes) remains to be
+  written once a model file and a device are available.
+
+`src/vision/useCameraAvailability.ts` wraps vision-camera's permission and
+device-presence hooks into one status (`checking` / `ready` /
+`permission_denied` / `no_device`), so camera-dependent games have a single
+"camera unavailable" state to fall back on (Task 8.6).
+
 ## Setup
 
 Dependencies are not installed yet in this repo (no `node_modules/`,
