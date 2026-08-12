@@ -446,15 +446,16 @@ Goal: a README and docs that work both as a build guide and as a showcase, with 
 
 Structure to follow: hero image or GIF above the fold, a one-line description, a small row of real badges, a 30-second quickstart, a short "why this works" section, an architecture diagram, a hardware BOM table, a demo video, and an awards section. Keep the README scannable (roughly 800-1500 words) and move deep material into `docs/`. Use only meaningful badges. Host images under `docs/images/`. GitHub renders mermaid natively, so the architecture diagram needs no image file.
 
-- [ ] Task 10.1: Write the hero section: title "DUO", the product one-liner, and the core proposition "Rehab shouldn't feel like being alone." Add an image placeholder `docs/images/hero.png` inside a centered HTML block and a demo GIF placeholder `docs/demo/duo-demo.gif`, each with a clear `<!-- TODO: drop hero image here -->` comment.
-- [ ] Task 10.2: Add a badges row: MIT license (shields.io), Expo/React Native, Python, and a "Superhuman Lab Hackathon Winner" badge. Provide the shields.io markdown.
-- [ ] Task 10.3: Write the quickstart: start Ollama and pull models, run the FastAPI brain, build and run the Expo dev client, flash the firmware. Copy-paste commands, with the Expo Go limitation stated.
-- [ ] Task 10.4: Write a short, grounded "Why this works" section citing socially assistive robotics for rehabilitation: gamification increases motivation and adherence to repetitive exercise, and a physically present robot can motivate more than a screen. Put the reference list in `docs/ARCHITECTURE.md`:
+- [x] Task 10.1: Write the hero section: title "DUO", the product one-liner, and the core proposition "Rehab shouldn't feel like being alone." Add an image placeholder `docs/images/hero.png` inside a centered HTML block and a demo GIF placeholder `docs/demo/duo-demo.gif`, each with a clear `<!-- TODO: drop hero image here -->` comment.
+- [x] Task 10.2: Add a badges row: MIT license (shields.io), Expo/React Native, Python, and a "Superhuman Lab Hackathon Winner" badge. Provide the shields.io markdown.
+- [x] Task 10.3: Write the quickstart: start Ollama and pull models, run the FastAPI brain, build and run the Expo dev client, flash the firmware. Copy-paste commands, with the Expo Go limitation stated.
+- [x] Task 10.4: Write a short, grounded "Why this works" section citing socially assistive robotics for rehabilitation: gamification increases motivation and adherence to repetitive exercise, and a physically present robot can motivate more than a screen. Put the reference list in `docs/ARCHITECTURE.md`:
   - Feil-Seifer D, Matarić MJ. "Defining Socially Assistive Robotics." ICORR 2005, pp. 465-468. DOI 10.1109/ICORR.2005.1501143.
   - Carnevale A, Raso A, Antonacci C, et al. "Exploring the Impact of Socially Assistive Robots in Rehabilitation Scenarios." Bioengineering 2025;12(2):204. DOI 10.3390/bioengineering12020204.
   - Dembovski A, Amitai Y, Levy-Tzedek S. "A Socially Assistive Robot for Stroke Patients: Acceptance, Needs, and Concerns of Patients and Informal Caregivers." Frontiers in Rehabilitation Sciences 2022;2:793233. DOI 10.3389/fresc.2021.793233.
   - The team's existing citations may be kept alongside these. Keep the list small and tie every claim to one source.
-- [ ] Task 10.5: Add the architecture diagram as a mermaid block in the README (and export to `docs/diagrams/`), showing phone (camera, CV, face, games, audio) to brain (FastAPI, Ollama, memory) over SSE, phone to ESP32-C6 over WebSocket, and ESP32 to servos. Encode the core principle.
+- [x] Task 10.5: Add the architecture diagram as a mermaid block in the README (and export to `docs/diagrams/`), showing phone (camera, CV, face, games, audio) to brain (FastAPI, Ollama, memory) over SSE, phone to ESP32-C6 over WebSocket, and ESP32 to servos. Encode the core principle.
+  - NOTE: diagram source also exported to `docs/diagrams/architecture.mmd`, identical content to the README's mermaid block.
 
 Diagram to include:
 
@@ -475,10 +476,13 @@ flowchart LR
   TRK -->|WebSocket ~10Hz X:0.52| ESP
 ```
 
-- [ ] Task 10.6: Write the hardware BOM in `docs/HARDWARE.md` and summarize it in the README: smartphone (head), 2x MG90S servos plus pan/tilt bracket, ESP32-C6 / Glyph-C6, ultrasonic sensor, motion sensor, PVC pipe body, LEGO Inventor base, wiring and power. Columns: Part, Qty, Notes/Link (placeholders).
-- [ ] Task 10.7: Add a demo video placeholder (thumbnail linking to a video URL) and an Awards section: won the Superhuman Lab hackathon (Impact Lab Bengaluru, Aug 8-9, hosted by Elseplay with Mind Assets, supported by the Claude Code Community); team "Int Space" (Vinayak Kempawad, Ankit Kumar, Sanjay Rohith, Abhishek Raj).
-- [ ] Task 10.8: Write `docs/SAFETY.md` and link it prominently. Wording is specified in Phase 12.
-- [ ] Task 10.9: Fill `docs/ARCHITECTURE.md` (component responsibilities, data flow, memory model, and the honest note that DUO uses system prompt plus memory with LoRA as an optional future adapter), `docs/PROTOCOL.md` (from Phase 6), and `CONTRIBUTING.md` (dev setup, running tests, and the rule that contributors commit their own work).
+- [x] Task 10.6: Write the hardware BOM in `docs/HARDWARE.md` and summarize it in the README: smartphone (head), 2x MG90S servos plus pan/tilt bracket, ESP32-C6 / Glyph-C6, ultrasonic sensor, motion sensor, PVC pipe body, LEGO Inventor base, wiring and power. Columns: Part, Qty, Notes/Link (placeholders).
+- [x] Task 10.7: Add a demo video placeholder (thumbnail linking to a video URL) and an Awards section: won the Superhuman Lab hackathon (Impact Lab Bengaluru, Aug 8-9, hosted by Elseplay with Mind Assets, supported by the Claude Code Community); team "Int Space" (Vinayak Kempawad, Ankit Kumar, Sanjay Rohith, Abhishek Raj).
+  - NOTE: video thumbnail links to `https://example.com/duo-demo-video`, an obvious unresolved placeholder (marked `TODO`) — no real video exists yet, and no URL was fabricated as if real.
+- [x] Task 10.8: Write `docs/SAFETY.md` and link it prominently. Wording is specified in Phase 12.
+  - NOTE: written now using Phase 12 Task 12.1's exact wording spec (read ahead since it's fully specified there), so it's available for Phase 10's README link. Phase 12 should treat this file as already satisfying 12.1 and only needs to add the in-app disclaimer (12.2) and output filter (12.4).
+- [x] Task 10.9: Fill `docs/ARCHITECTURE.md` (component responsibilities, data flow, memory model, and the honest note that DUO uses system prompt plus memory with LoRA as an optional future adapter), `docs/PROTOCOL.md` (from Phase 6), and `CONTRIBUTING.md` (dev setup, running tests, and the rule that contributors commit their own work).
+  - NOTE: `docs/PROTOCOL.md` already existed and fully specified the message format from Phase 6 — no changes needed.
 
 Definition of Done (Phase 10):
 
