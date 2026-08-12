@@ -9,10 +9,7 @@ cognitive exercises into playful interactions, giving people in recovery a
 reason to move, engage, and feel less alone.
 
 <!-- TODO: drop hero image here -->
-<img src="docs/images/hero.png" alt="DUO hero image" width="720" />
-
-<!-- TODO: drop demo GIF here -->
-<img src="docs/demo/duo-demo.gif" alt="DUO demo" width="480" />
+<img src="assets/image.png" alt="DUO hero image" width="720" />
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Expo](https://img.shields.io/badge/Expo-SDK%2057-000020?logo=expo)](app/README.md)
