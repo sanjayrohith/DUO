@@ -1,0 +1,14 @@
+flowchart LR
+  subgraph Phone [Phone: the head]
+    CAM[Camera + CV] --> TRK[Person / hand tracking]
+    FACE[Skia face]
+    GAMES[Games]
+    AUDIO[Audio]
+  end
+  subgraph Brain [Laptop / Raspberry Pi: the brain]
+    API[FastAPI] --> OLL[Ollama LLM]
+    API --> MEM[(SQLite + sqlite-vec)]
+  end
+  ESP[ESP32-C6: motion] --> SERVO[Pan/tilt servos]
+  GAMES <-->|SSE HTTP| API
+  TRK -->|WebSocket ~10Hz X:0.52| ESP
